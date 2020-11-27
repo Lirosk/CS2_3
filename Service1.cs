@@ -1,4 +1,4 @@
-﻿using System.ServiceProcess;
+using System.ServiceProcess;
 using System.Threading;
 
 namespace lab3
@@ -21,7 +21,14 @@ namespace lab3
 		{
 			var provider = new Provider(new Parser());
 
-			Options options = provider.GetConfig<Options>(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, configFileName));
+			var configPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, configFileName);
+
+			if (!System.IO.File.Exists(configPath))
+			{
+				throw new System.IO.FileNotFoundException("No config file!");
+			}
+
+			Options options = provider.GetConfig<Options>(configPath);
 			overseer = new Overseer(options);
 
 			Thread managerThread = new Thread(new ThreadStart(overseer.Start));
