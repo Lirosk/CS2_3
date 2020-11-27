@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -13,10 +13,10 @@ namespace lab3
 		private object locker = new object();
 
 		public Commands(Options options)
-        {
+		{
 			targetDirectoryPath = options.TargetDirectoryPath;
 			logPath = options.LogPath;
-        }
+		}
 
 		internal void OnAdded(object sender, FileSystemEventArgs e)
 		{
@@ -31,26 +31,26 @@ namespace lab3
 				var name = Path.GetFileName(path);
 
 				try
-                {
+				{
 					//to zip
 					Service1.overseer.watcher.EnableRaisingEvents = false;
-                    Zip(sourceDirectoryPath, sourceDirectoryPath, name);
+					Zip(sourceDirectoryPath, sourceDirectoryPath, name);
 					Delete(sourceDirectoryPath, name);
 					Service1.overseer.watcher.EnableRaisingEvents = true;
 
-                    //encrypt
-                    Encrypt(sourceDirectoryPath, name + ".gz"); //because Zip(...) adds ".gz" to zipped file name
+					//encrypt
+					Encrypt(sourceDirectoryPath, name + ".gz"); //because Zip(...) adds ".gz" to zipped file name
 
-                    //move
-                    Move(sourceDirectoryPath, targetDirectoryPath, name + ".gz");
+					//move
+					Move(sourceDirectoryPath, targetDirectoryPath, name + ".gz");
 
-                    //unzip
-                    Decrypt(targetDirectoryPath, name + ".gz");
-                    Unzip(targetDirectoryPath, targetDirectoryPath, name + ".gz");
-                    Delete(targetDirectoryPath, name + ".gz");
-                }
+					//unzip
+					Decrypt(targetDirectoryPath, name + ".gz");
+					Unzip(targetDirectoryPath, targetDirectoryPath, name + ".gz");
+					Delete(targetDirectoryPath, name + ".gz");
+				}
 				catch (IOException ex)
-                {
+				{
 					using (StreamWriter writer = new StreamWriter(logPath, true))
 					{
 						writer.WriteLine("\nException!\n" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss ") + ex.Message + "\n\n");
